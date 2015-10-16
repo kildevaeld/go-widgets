@@ -3,7 +3,7 @@ package widgets
 import (
 	"time"
 
-	"github.com/kildevaeld/go-acsii"
+	"github.com/kildevaeld/go-ascii"
 	tm "github.com/kildevaeld/prompt/terminal"
 )
 
@@ -36,7 +36,7 @@ func (c *Confirm) Run() {
 		ans = "no"
 	} else {
 		write(writer, "%s%s ", tm.ClearLine, c.Message)
-		write(writer, config.HighlightColor.Color("please enter %s(es) or %s(o)", acsii.Bold.Color("y"), acsii.Bold.Color("n")))
+		write(writer, config.HighlightColor.Color("please enter %s(es) or %s(o)", ascii.Bold.Color("y"), ascii.Bold.Color("n")))
 
 		time.Sleep(1 * time.Second)
 		write(writer, tm.ClearLine)

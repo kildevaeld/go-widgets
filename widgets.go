@@ -5,26 +5,28 @@ import (
 	"io"
 	"os"
 
-	"github.com/kildevaeld/go-acsii"
+	"github.com/kildevaeld/go-ascii"
 )
 
 type WidgetConfig struct {
-	MessageColor   acsii.Style
-	HighlightColor acsii.Style
-	StdinColor     acsii.Style
+	MessageColor   ascii.Style
+	HighlightColor ascii.Style
+	StdinColor     ascii.Style
 	Writer         io.Writer
 }
 
 var DefaultConfig WidgetConfig = WidgetConfig{
-	MessageColor:   acsii.Dim,
-	HighlightColor: acsii.Cyan,
-	StdinColor:     acsii.Reset,
+	MessageColor:   ascii.Dim,
+	HighlightColor: ascii.Cyan,
+	StdinColor:     ascii.Reset,
 	Writer:         os.Stdout,
 }
 
 type Widget interface {
 }
 
-func write(w io.Writer, msg string, args ...interface{}) {
-	w.Write([]byte(fmt.Sprintf(msg, args...)))
+func write(w io.Writer, msg string, args ...interface{}) int {
+	str := fmt.Sprintf(msg, args...)
+	w.Write([]byte(str))
+	return len(str)
 }

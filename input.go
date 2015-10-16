@@ -1,7 +1,7 @@
 package widgets
 
 import (
-	"github.com/kildevaeld/go-acsii"
+	"github.com/kildevaeld/go-ascii"
 	tm "github.com/kildevaeld/prompt/terminal"
 )
 
@@ -19,7 +19,7 @@ func (c *Input) Run() {
 
 	writer := config.Writer
 
-	cursor := acsii.Cursor{writer}
+	cursor := ascii.Cursor{writer}
 
 	write(writer, "%s ", config.MessageColor.Color(c.Message))
 

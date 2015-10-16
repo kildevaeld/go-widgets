@@ -1,7 +1,7 @@
 package widgets
 
 import (
-	"github.com/kildevaeld/go-acsii"
+	"github.com/kildevaeld/go-ascii"
 	tm "github.com/kildevaeld/prompt/terminal"
 )
 
@@ -22,12 +22,12 @@ func (c *List) Run() {
 	}
 
 	if c.Indicator == "" {
-		c.Indicator = acsii.Pointer
+		c.Indicator = ascii.Pointer
 	}
 
 	writer := config.Writer
 
-	cursor := acsii.Cursor{writer}
+	cursor := ascii.Cursor{writer}
 
 	cursor.Hide()
 

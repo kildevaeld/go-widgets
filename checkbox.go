@@ -3,7 +3,7 @@ package widgets
 import (
 	"strings"
 
-	"github.com/kildevaeld/go-acsii"
+	"github.com/kildevaeld/go-ascii"
 	tm "github.com/kildevaeld/prompt/terminal"
 )
 
@@ -35,15 +35,15 @@ func (c *Checkbox) Run() {
 	}
 
 	if c.SelectedIndicator == "" {
-		c.SelectedIndicator = acsii.CheckboxCircleOn
+		c.SelectedIndicator = ascii.CircleCross
 	}
 	if c.UnselectedIndicator == "" {
-		c.UnselectedIndicator = acsii.CheckboxCircleOff
+		c.UnselectedIndicator = ascii.RadioOff
 	}
 
 	writer := config.Writer
 
-	cursor := acsii.Cursor{writer}
+	cursor := ascii.Cursor{writer}
 
 	cursor.Hide()
 
@@ -51,9 +51,9 @@ func (c *Checkbox) Run() {
 
 	for i, s := range choices {
 		if i == len(choices)-1 {
-			c.highlight_line(results, s)
+			c.printLine(results, s, true)
 		} else {
-			c.print_line(results, s)
+			c.printLine(results, s, false)
 		}
 		write(writer, "\n")
 	}
@@ -61,6 +61,7 @@ func (c *Checkbox) Run() {
 
 	cursor.Up(1)
 	curPos := l - 1
+	x := 0
 	for {
 		a, k, e := tm.GetChar()
 		if e != nil {
@@ -70,32 +71,34 @@ func (c *Checkbox) Run() {
 		tm.HandleSignals(a)
 
 		if k == tm.UpKeyCode && curPos != 0 {
-			cursor.Backward(len(choices[curPos]) + 3)
-			c.print_line(results, choices[curPos])
+			cursor.Backward(x)
+			x = c.printLine(results, choices[curPos], false)
 
 			curPos = curPos - 1
-			cursor.Up(1).Backward(len(choices[curPos+1]) + 3)
+			cursor.Up(1).Backward(x)
 
-			c.highlight_line(results, choices[curPos])
+			x = c.printLine(results, choices[curPos], true)
 
 		} else if k == tm.DownKeyCode && curPos < l-1 {
-			cursor.Backward(len(choices[curPos]) + 3)
-			c.print_line(results, choices[curPos])
+			cursor.Backward(x)
+			x = c.printLine(results, choices[curPos], false)
 
 			curPos = curPos + 1
-			cursor.Down(1).Backward(len(choices[curPos-1]) + 3)
+			cursor.Down(1).Backward(x)
 
-			c.highlight_line(results, choices[curPos])
+			x = c.printLine(results, choices[curPos], true)
+
 		} else if a == tm.Enter {
 			break
 		} else if a == tm.Space {
-			cursor.Backward(len(choices[curPos]) + 3)
+			cursor.Backward(x)
+
 			if i := contains(results, choices[curPos]); i > -1 {
 				results = append(results[:i], results[i+1:]...)
-				c.print_line(results, choices[curPos])
+				x = c.printLine(results, choices[curPos], false)
 			} else {
 				results = append(results, choices[curPos])
-				c.select_line(choices[curPos])
+				x = c.printLine(results, choices[curPos], true)
 			}
 		}
 	}
@@ -106,7 +109,7 @@ func (c *Checkbox) Run() {
 	for l > -1 {
 		cursor.Up(1)
 		write(writer, tm.ClearLine)
-		//c.Theme.Write([]byte(tm.ClearLine))
+
 		l = l - 1
 	}
 	vals := strings.Join(results, ", ")
@@ -116,23 +119,19 @@ func (c *Checkbox) Run() {
 	return
 }
 
-func (c *Checkbox) highlight_line(results []string, s string) {
+func (c *Checkbox) printLine(results []string, s string, highlight bool) int {
+	i := c.getIndicator(results, s)
+	color := c.Config.StdinColor
+	if highlight {
+		color = c.Config.HighlightColor
+	}
+
+	return write(c.Config.Writer, color.Color("%s %s %s", ascii.EraseEndLine, i, s))
+}
+func (c *Checkbox) getIndicator(results []string, s string) string {
 	i := c.UnselectedIndicator
 	if contains(results, s) > -1 {
 		i = c.SelectedIndicator
 	}
-	write(c.Config.Writer, c.Config.HighlightColor.Color(" %s %s", i, s))
-}
-
-func (c *Checkbox) print_line(results []string, s string) {
-	i := c.UnselectedIndicator
-	if contains(results, s) > -1 {
-		i = c.SelectedIndicator
-	}
-	write(c.Config.Writer, c.Config.StdinColor.Color(" %s %s", i, s))
-	//c.Theme.Printf("   %s", s)
-}
-
-func (c *Checkbox) select_line(s string) {
-	write(c.Config.Writer, " %s %s", c.Config.HighlightColor.Color(c.SelectedIndicator), c.Config.StdinColor.Color(s))
+	return i
 }

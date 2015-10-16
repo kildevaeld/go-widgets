@@ -1,7 +1,7 @@
 package widgets
 
 import (
-	"github.com/kildevaeld/go-acsii"
+	"github.com/kildevaeld/go-ascii"
 	tm "github.com/kildevaeld/prompt/terminal"
 )
 
@@ -20,12 +20,12 @@ func (c *Password) Run() {
 	}
 
 	if c.Indicator == "" {
-		c.Indicator = acsii.Bullet
+		c.Indicator = ascii.Bullet
 	}
 
 	writer := config.Writer
 
-	cursor := acsii.Cursor{writer}
+	cursor := ascii.Cursor{writer}
 
 	write(writer, "%s ", config.MessageColor.Color(c.Message))
 
@@ -57,13 +57,14 @@ func (c *Password) Run() {
 
 		write(writer, config.StdinColor.Color(c.Indicator))
 
+		//write(writer, "len %d", len(c.Indicator))
 		x++
 	}
 
 	cursor.Backward(x)
 	str := ""
 	for x > 0 {
-		str += "*"
+		str += c.Indicator // "*"
 		x--
 	}
 	write(writer, "%s\n", config.HighlightColor.Color(str))
