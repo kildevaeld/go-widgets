@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/kildevaeld/go-ascii"
-	tm "github.com/kildevaeld/prompt/terminal"
 )
 
 type Confirm struct {
@@ -23,9 +22,9 @@ func (c *Confirm) Run() {
 
 	write(writer, config.MessageColor.Color("%s [yn] ", c.Message))
 
-	a, _, _ := tm.GetChar()
+	a, _, _ := ascii.GetChar()
 
-	tm.HandleSignals(a)
+	ascii.HandleSignals(a)
 
 	ans := string(a)
 	if ans == "y" || ans == "Y" {
@@ -35,11 +34,11 @@ func (c *Confirm) Run() {
 		c.Value = false
 		ans = "no"
 	} else {
-		write(writer, "%s%s ", tm.ClearLine, c.Message)
+		write(writer, "%s%s ", ascii.ClearLine, c.Message)
 		write(writer, config.HighlightColor.Color("please enter %s(es) or %s(o)", ascii.Bold.Color("y"), ascii.Bold.Color("n")))
 
 		time.Sleep(1 * time.Second)
-		write(writer, tm.ClearLine)
+		write(writer, ascii.ClearLine)
 		c.Run()
 		return
 	}

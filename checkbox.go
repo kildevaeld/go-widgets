@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/kildevaeld/go-ascii"
-	tm "github.com/kildevaeld/prompt/terminal"
 )
 
 type Checkbox struct {
@@ -63,14 +62,14 @@ func (c *Checkbox) Run() {
 	curPos := l - 1
 	x := 0
 	for {
-		a, k, e := tm.GetChar()
+		a, k, e := ascii.GetChar()
 		if e != nil {
 			return
 		}
 
-		tm.HandleSignals(a)
+		ascii.HandleSignals(a)
 
-		if k == tm.UpKeyCode && curPos != 0 {
+		if k == ascii.UpKeyCode && curPos != 0 {
 			cursor.Backward(x)
 			x = c.printLine(results, choices[curPos], false)
 
@@ -79,7 +78,7 @@ func (c *Checkbox) Run() {
 
 			x = c.printLine(results, choices[curPos], true)
 
-		} else if k == tm.DownKeyCode && curPos < l-1 {
+		} else if k == ascii.DownKeyCode && curPos < l-1 {
 			cursor.Backward(x)
 			x = c.printLine(results, choices[curPos], false)
 
@@ -88,9 +87,9 @@ func (c *Checkbox) Run() {
 
 			x = c.printLine(results, choices[curPos], true)
 
-		} else if a == tm.Enter {
+		} else if a == ascii.Enter {
 			break
-		} else if a == tm.Space {
+		} else if a == ascii.Space {
 			cursor.Backward(x)
 
 			if i := contains(results, choices[curPos]); i > -1 {
@@ -108,7 +107,7 @@ func (c *Checkbox) Run() {
 
 	for l > -1 {
 		cursor.Up(1)
-		write(writer, tm.ClearLine)
+		write(writer, ascii.ClearLine)
 
 		l = l - 1
 	}

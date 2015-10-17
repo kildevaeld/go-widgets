@@ -2,7 +2,6 @@ package widgets
 
 import (
 	"github.com/kildevaeld/go-ascii"
-	tm "github.com/kildevaeld/prompt/terminal"
 )
 
 type Password struct {
@@ -35,9 +34,9 @@ func (c *Password) Run() {
 	buffer := ""
 
 	for {
-		a, _, _ := tm.GetChar()
-		tm.HandleSignals(a)
-		if a == tm.Backspace {
+		a, _, _ := ascii.GetChar()
+		ascii.HandleSignals(a)
+		if a == ascii.Backspace {
 			if x == 0 {
 				continue
 			}
@@ -48,7 +47,7 @@ func (c *Password) Run() {
 			buffer = buffer[0:x]
 			continue
 
-		} else if a == tm.Enter {
+		} else if a == ascii.Enter {
 			c.Value = buffer
 			break
 		}

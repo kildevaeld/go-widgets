@@ -2,7 +2,6 @@ package widgets
 
 import (
 	"github.com/kildevaeld/go-ascii"
-	tm "github.com/kildevaeld/prompt/terminal"
 )
 
 type List struct {
@@ -46,14 +45,14 @@ func (c *List) Run() {
 	cursor.Up(1)
 	curPos := l - 1
 	for {
-		a, k, e := tm.GetChar()
+		a, k, e := ascii.GetChar()
 		if e != nil {
 			return
 		}
 
-		tm.HandleSignals(a)
+		ascii.HandleSignals(a)
 
-		if k == tm.UpKeyCode && curPos != 0 {
+		if k == ascii.UpKeyCode && curPos != 0 {
 			cursor.Backward(len(choices[curPos]) + 3)
 			c.print_line(choices[curPos])
 
@@ -62,7 +61,7 @@ func (c *List) Run() {
 
 			c.highlight_line(choices[curPos])
 
-		} else if k == tm.DownKeyCode && curPos < l-1 {
+		} else if k == ascii.DownKeyCode && curPos < l-1 {
 			cursor.Backward(len(choices[curPos]) + 3)
 			c.print_line(choices[curPos])
 
@@ -70,7 +69,7 @@ func (c *List) Run() {
 			cursor.Down(1).Backward(len(choices[curPos-1]) + 3)
 
 			c.highlight_line(choices[curPos])
-		} else if a == tm.Enter {
+		} else if a == ascii.Enter {
 			break
 		}
 	}
@@ -80,8 +79,8 @@ func (c *List) Run() {
 
 	for l > -1 {
 		cursor.Up(1)
-		write(writer, tm.ClearLine)
-		//c.Theme.Write([]byte(tm.ClearLine))
+		write(writer, ascii.ClearLine)
+		//c.Theme.Write([]byte(ascii.ClearLine))
 		l = l - 1
 	}
 	write(writer, "%s %s\n", config.MessageColor.Color(c.Message), config.HighlightColor.Color(c.Value))

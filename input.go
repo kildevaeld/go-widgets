@@ -2,7 +2,6 @@ package widgets
 
 import (
 	"github.com/kildevaeld/go-ascii"
-	tm "github.com/kildevaeld/prompt/terminal"
 )
 
 type Input struct {
@@ -27,9 +26,9 @@ func (c *Input) Run() {
 	var buffer []byte
 
 	for {
-		a, k, _ := tm.GetChar()
-		tm.HandleSignals(a)
-		if a == tm.Backspace {
+		a, k, _ := ascii.GetChar()
+		ascii.HandleSignals(a)
+		if a == ascii.Backspace {
 			if x == 0 {
 				continue
 			}
@@ -39,22 +38,22 @@ func (c *Input) Run() {
 			buffer = buffer[0:x]
 			continue
 
-		} else if a == tm.Enter {
+		} else if a == ascii.Enter {
 			c.Value = string(buffer)
 			break
-		} else if k == tm.RightKeyCode {
+		} else if k == ascii.RightKeyCode {
 			if x < len(buffer)-1 {
 				x++
 				cursor.Forward(1)
 			}
 			continue
-		} else if k == tm.LeftKeyCode {
+		} else if k == ascii.LeftKeyCode {
 			if x > 0 {
 				x--
 				cursor.Backward(1)
 			}
 			continue
-		} else if k == tm.UpKeyCode || k == tm.DownKeyCode {
+		} else if k == ascii.UpKeyCode || k == ascii.DownKeyCode {
 			continue
 		}
 
