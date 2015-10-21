@@ -15,15 +15,6 @@ type Checkbox struct {
 	Config              WidgetConfig
 }
 
-func contains(haystack []string, needle string) int {
-	for i, n := range haystack {
-		if needle == n {
-			return i
-		}
-	}
-	return -1
-}
-
 func (c *Checkbox) Run() {
 	choices := c.Choices
 	var results []string

@@ -8,6 +8,15 @@ import (
 	"github.com/kildevaeld/go-ascii"
 )
 
+func contains(haystack []string, needle string) int {
+	for i, n := range haystack {
+		if needle == n {
+			return i
+		}
+	}
+	return -1
+}
+
 type WidgetConfig struct {
 	MessageColor   ascii.Style
 	HighlightColor ascii.Style
@@ -23,6 +32,7 @@ var DefaultConfig WidgetConfig = WidgetConfig{
 }
 
 type Widget interface {
+	Run()
 }
 
 func write(w io.Writer, msg string, args ...interface{}) int {

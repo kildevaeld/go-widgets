@@ -3,7 +3,21 @@ package main
 import "github.com/kildevaeld/go-widgets"
 
 func main() {
+	paginated := widgets.PaginatedList{
+		Message: "test",
+		Paginate: func(page int) []string {
+			switch page {
+			case 1:
+				return []string{"Page1: Item 1", "Page1: Item 2"}
+			case 2:
+				return []string{"Page2: Item 1", "Page2: Item 2"}
+			default:
+				return nil
+			}
 
+		},
+	}
+	paginated.Run()
 	// Input
 	input := widgets.Input{
 		Message: "Enter name",
