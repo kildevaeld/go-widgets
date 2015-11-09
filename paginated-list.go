@@ -30,8 +30,9 @@ func (p *PaginatedList) printList(choices []string, result *string) Paginate {
 
 	}
 
-	x := p.writeString("p(rev), n(ext) or d(one)")
+	x := p.writeString("p(rev), n(ext) or d(one)\r")
 	p.cursor.Up(1)
+	x = 0
 	l := len(choices)
 	y := l - 1
 	height := len(choices)
@@ -105,22 +106,37 @@ func (p *PaginatedList) Run() {
 	var result string
 	p.cursor.Hide()
 	p.writeString("%s\n", p.Message)
+
+	var choices []string
 	for {
 
-		choices := p.Paginate(page)
-
-		action := p.printList(choices, &result)
-
-		if action == PaginateBack {
-			page = page - 1
-		} else if action == PaginateNext {
-			page = page + 1
+		if page >= 1 {
+			choices = p.Paginate(page)
 		} else {
-			write(p.Config.Writer, "%s", ascii.EraseLines(len(choices)))
+			page = 1
+		}
+
+		if choices == nil {
+			if page > 1 {
+				page = 1
+				continue
+			}
 			break
 		}
-		write(p.Config.Writer, "%s", ascii.EraseLines(len(choices)))
+
+		action := p.printList(choices, &result)
+		p.cursor.Up(1)
+		if action == PaginateNext {
+			page = page + 1
+		} else if action == PaginateBack {
+			page = page - 1
+		} else {
+			break
+		}
+		//ui.Printf("%s", ascii.EraseLines(12))
+		//p.cursor.Backward(25)
 	}
+
 	p.cursor.Up(1)
 	p.writeString("%s %s\n", p.Message, p.Config.HighlightColor.Color(result))
 	p.Value = result
