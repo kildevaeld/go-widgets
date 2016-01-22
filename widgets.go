@@ -32,7 +32,7 @@ var DefaultConfig WidgetConfig = WidgetConfig{
 }
 
 type Widget interface {
-	Run()
+	Run() interface{}
 }
 
 func write(w io.Writer, msg string, args ...interface{}) int {

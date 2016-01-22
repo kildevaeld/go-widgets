@@ -10,7 +10,7 @@ type Input struct {
 	Config  WidgetConfig
 }
 
-func (c *Input) Run() {
+func (c *Input) Run() interface{} {
 	config := c.Config
 	if config.Writer == nil {
 		config = DefaultConfig
@@ -21,7 +21,9 @@ func (c *Input) Run() {
 	cursor := ascii.Cursor{writer}
 
 	write(writer, "%s ", config.MessageColor.Color(c.Message))
-
+	if c.Value != "" {
+		write(writer, "[%s] ", c.Value)
+	}
 	x := 0
 	var buffer []byte
 
@@ -39,7 +41,10 @@ func (c *Input) Run() {
 			continue
 
 		} else if a == ascii.Enter {
-			c.Value = string(buffer)
+			if len(buffer) > 0 {
+				c.Value = string(buffer)
+			}
+			
 			break
 		} else if k == ascii.RightKeyCode {
 			if x < len(buffer)-1 {
@@ -68,6 +73,6 @@ func (c *Input) Run() {
 	}
 
 	cursor.Backward(x)
-	write(writer, "%s\n", config.HighlightColor.Color(string(buffer)))
-
+	write(writer, "%s\n", config.HighlightColor.Color(c.Value))
+	return c.Value
 }

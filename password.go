@@ -11,7 +11,7 @@ type Password struct {
 	Indicator string
 }
 
-func (c *Password) Run() {
+func (c *Password) Run() interface{} {
 
 	config := c.Config
 	if config.Writer == nil {
@@ -67,5 +67,5 @@ func (c *Password) Run() {
 		x--
 	}
 	write(writer, "%s\n", config.HighlightColor.Color(str))
-
+	return c.Value
 }

@@ -12,7 +12,7 @@ type List struct {
 	Config    WidgetConfig
 }
 
-func (c *List) Run() {
+func (c *List) Run() interface{}{
 	choices := c.Choices
 	config := c.Config
 	if config.Writer == nil {
@@ -47,7 +47,7 @@ func (c *List) Run() {
 	for {
 		a, k, e := ascii.GetChar()
 		if e != nil {
-			return
+			return nil
 		}
 
 		ascii.HandleSignals(a)
@@ -86,7 +86,7 @@ func (c *List) Run() {
 	write(writer, "%s %s\n", config.MessageColor.Color(c.Message), config.HighlightColor.Color(c.Value))
 
 	cursor.Show()
-	return
+	return c.Value
 }
 
 func (c *List) highlight_line(s string) {

@@ -15,7 +15,7 @@ type Checkbox struct {
 	Config              WidgetConfig
 }
 
-func (c *Checkbox) Run() {
+func (c *Checkbox) Run() interface{} {
 	choices := c.Choices
 	var results []string
 	config := c.Config
@@ -55,7 +55,7 @@ func (c *Checkbox) Run() {
 	for {
 		a, k, e := ascii.GetChar()
 		if e != nil {
-			return
+			return nil
 		}
 
 		ascii.HandleSignals(a)
@@ -106,7 +106,7 @@ func (c *Checkbox) Run() {
 	write(writer, "%s %s\n", config.MessageColor.Color(c.Message), config.HighlightColor.Color(vals))
 
 	cursor.Show()
-	return
+	return c.Value
 }
 
 func (c *Checkbox) printLine(results []string, s string, highlight bool) int {

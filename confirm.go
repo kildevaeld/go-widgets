@@ -12,7 +12,7 @@ type Confirm struct {
 	Config  WidgetConfig
 }
 
-func (c *Confirm) Run() {
+func (c *Confirm) Run() interface{} {
 
 	config := c.Config
 	if config.Writer == nil {
@@ -39,10 +39,10 @@ func (c *Confirm) Run() {
 
 		time.Sleep(1 * time.Second)
 		write(writer, ascii.ClearLine)
-		c.Run()
-		return
+		return c.Run()
+		
 	}
 
 	write(writer, "%s\n", config.HighlightColor.Color(ans))
-
+	return c.Value
 }

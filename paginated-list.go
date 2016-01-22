@@ -89,7 +89,7 @@ func (p *PaginatedList) writeString(str string, args ...interface{}) int {
 	return write(p.Config.Writer, str, args...)
 }
 
-func (p *PaginatedList) Run() {
+func (p *PaginatedList) Run() interface{} {
 	config := p.Config
 	if config.Writer == nil {
 		config = DefaultConfig
@@ -141,6 +141,8 @@ func (p *PaginatedList) Run() {
 	p.writeString("%s %s\n", p.Message, p.Config.HighlightColor.Color(result))
 	p.Value = result
 	p.cursor.Show()
+
+	return p.Value
 }
 
 func NewPaginatedList(msg string, fn func(page int) []string) *PaginatedList {
